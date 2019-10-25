@@ -97,7 +97,7 @@ function mainCtrl($scope, $http){
                 $scope.stringArchitect = $scope.resArchitect.toString();
                 $scope.architect = $scope.stringArchitect.split("/");
                 $scope.finalArchitect = $scope.architect[4];}
-            
+
 
                   addMarker({
                     coords:{lat: parseFloat(val.lat.value), lng: parseFloat(val.long.value)},
