@@ -64,9 +64,9 @@ function mainCtrl($scope, $http){
 
     $scope.AttractionInformationQuery = "Select ?lat ?long ?description ?architect ?photo WHERE { <"+ attraction +
       "> <http://www.example.org/travelwithstyle/hasLat> ?lat. <"+ attraction +
-      "> <http://www.example.org/travelwithstyle/hasLong> ?long. OPTIONAL{ <"+ attraction +
-      "> <http://www.example.org/travelwithstyle/hasBuildBy> ?architect.} OPTIONAL{ <"+ attraction +
-      "> <http://www.example.org/travelwithstyle/hasDescription> ?description.} }"
+      "> <http://www.example.org/travelwithstyle/hasLong> ?long.  OPTIONAL{ <"+ attraction +
+      "> <http://www.example.org/travelwithstyle/hasDescription> ?description.}. OPTIONAL{ <"+ attraction +
+      "> <http://www.example.org/travelwithstyle/hasBuildBy> ??architect.} }"
 
 
       $http( {
@@ -97,10 +97,7 @@ function mainCtrl($scope, $http){
                 $scope.stringArchitect = $scope.resArchitect.toString();
                 $scope.architect = $scope.stringArchitect.split("/");
                 $scope.finalArchitect = $scope.architect[4];}
-                else{ $scope.finalArchitect = "-"}
-              if(typeof val.photo !== "undefined"){
-                $scope.resPhoto = val.photo.value;
-              } else{$scope.resPhoto = "";}
+            
 
                   addMarker({
                     coords:{lat: parseFloat(val.lat.value), lng: parseFloat(val.long.value)},
