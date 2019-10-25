@@ -37,7 +37,7 @@ function mainCtrl($scope, $http){
   }
 
   $scope.myAppName = "Travel with style";
-  $scope.mysparqlendpoint = "http://192.168.1.161:7200/repositories/kadfp?name=&infer=true&sameAs=false&query=";
+  $scope.mysparqlendpoint = "http://192.168.2.178:7200/repositories/kadfp?name=&infer=true&sameAs=false&query=";
   $scope.AttractionQuery = "Select ?attraction where { ?attraction a <http://www.example.org/travelwithstyle/Attraction>}" ;
 
 
@@ -62,10 +62,12 @@ function mainCtrl($scope, $http){
 
   function getData(attraction){
 
-      $scope.AttractionInformationQuery = "Select * WHERE { <"+ attraction +"> <http://www.example.org/travelwithstyle/hasLat> ?lat. <"+
-        attraction +"> <http://www.example.org/travelwithstyle/hasLong> ?long. <"+attraction+
-        "> <http://www.example.org/travelwithstyle/hasDescription> ?description. <"+ attraction +
-        "> <http://www.example.org/travelwithstyle/hasBuildBy> ?architect. }"
+    $scope.AttractionInformationQuery = "Select ?lat ?long ?description ?architect ?photo WHERE { <"+ attraction +
+      "> <http://www.example.org/travelwithstyle/hasLat> ?lat. <"+ attraction +
+      "> <http://www.example.org/travelwithstyle/hasLong> ?long. OPTIONAL{ <"+ attraction +
+      "> <http://www.example.org/travelwithstyle/hasBuildBy> ?architect.} OPTIONAL{ <"+ attraction +
+      "> <http://www.example.org/travelwithstyle/hasDescription> ?description.} }"
+
 
       $http( {
     	method: "GET",
@@ -85,18 +87,26 @@ function mainCtrl($scope, $http){
                 {
                   $scope.finalAttr = ($scope.attr[4])
                 };
-                  $scope.resLong=(parseFloat(val.long.value));
-                  $scope.resLat= parseFloat(val.lat.value);
-                  $scope.resDescr = (val.description.value);
-                  $scope.resArchitect = (val.architect.value);
-                  $scope.stringArchitect = $scope.resArchitect.toString();
-                  $scope.architect = $scope.stringArchitect.split("/");
-                  $scope.finalArchitect = $scope.architect[4];
+                $scope.resLong= parseFloat(val.long.value);
+              $scope.resLat= parseFloat(val.lat.value);
+              if(typeof val.description !== "undefined"){
+                $scope.resDescr = (val.description.value);} else{ $scope.resDescr = "-"}
+              if(typeof val.achitect !== "undefined"){
+                // console.log(val.architect)
+                $scope.resArchitect = (val.architect.value);
+                $scope.stringArchitect = $scope.resArchitect.toString();
+                $scope.architect = $scope.stringArchitect.split("/");
+                $scope.finalArchitect = $scope.architect[4];}
+                else{ $scope.finalArchitect = "-"}
+              if(typeof val.photo !== "undefined"){
+                $scope.resPhoto = val.photo.value;
+              } else{$scope.resPhoto = "";}
 
                   addMarker({
                     coords:{lat: parseFloat(val.lat.value), lng: parseFloat(val.long.value)},
                     iconImage: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png',
                     content:'<div  style="border-style: solid;border-color: blue; background-color: # #ccebff; width: auto; height:auto; position: relative; float: right;"><div style="border-style: dotted;border-color: blue; border-width: 1px;background-color:  #ccebff;"><h1 <strong>Name:</strong></h1><p>' +$scope.finalAttr +'</p></div><div style="border-style: dotted;border-width: 1px;border-color: blue; background-color:  #ccebff;"><h2><strong>Long:</strong></h2><p>' +$scope.resLong +'</p></div><div style="border-style: dotted;border-width: 1px; border-color: blue;background-color:  #ccebff"><h2>Lat:</h2><p>' +$scope.resLat +'</p><div style="border-style: dotted;border-width: 1px; border-color: blue;background-color:  #ccebff "><h2><strong>Description:</strong></h2><p>' +$scope.resDescr +'</p> </div><div style=" border-style: dotted;border-width: 1px;border-color: blue; background-color:  #ccebff; "><h2> </strong>Architect:</strong></h2><p>' +$scope.finalArchitect+'</p></div></div>'
+
                   });
               })
       })
